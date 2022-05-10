@@ -51,19 +51,22 @@ namespace ConverterApp.Controllers
 
             document.Save(stream);
 
+            string result = Path.GetTempPath();  
+
             //Set the position as '0'.
             stream.Position = 0;
 
             //Download the PDF document in the browser
-            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application/pdf");
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, result);
 
             fileStreamResult.FileDownloadName = "ImageToPDF.pdf";
 
             return fileStreamResult;
         }
 
-
-
+       
+        
+        
 
         public IActionResult Error()
         {
