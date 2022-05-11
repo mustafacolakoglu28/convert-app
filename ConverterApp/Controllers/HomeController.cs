@@ -34,8 +34,10 @@ namespace ConverterApp.Controllers
             {
                 if (formFile.Length > 0)
                 {
-                    MemoryStream file = new MemoryStream();
+                    var filePath = Path.GetTempFileName();
+                    var file = System.IO.File.Create(filePath);
                     formFile.CopyTo(file);
+
                     //Loading the image
                     PdfImage image = PdfImage.FromStream(file);
                     //Adding new page
@@ -46,20 +48,25 @@ namespace ConverterApp.Controllers
                     file.Dispose();
                 }
             }
-            //Saving the PDF to the MemoryStream
-            MemoryStream stream = new MemoryStream();
+            
 
+            //saving the PDF to the 
+            var pathPDF = Path.GetTempFileName();
+            var stream = System.IO.File.Create(pathPDF);
             document.Save(stream);
-
-            string result = Path.GetTempPath();  
+ 
 
             //Set the position as '0'.
             stream.Position = 0;
 
             //Download the PDF document in the browser
-            FileStreamResult fileStreamResult = new FileStreamResult(stream, result);
+            FileStreamResult fileStreamResult = new FileStreamResult(stream, "application / pdf");
 
             fileStreamResult.FileDownloadName = "ImageToPDF.pdf";
+
+            //deleting the temp file
+            var deleteFile = new FileInfo(pathPDF);
+            deleteFile.Delete();
 
             return fileStreamResult;
         }
